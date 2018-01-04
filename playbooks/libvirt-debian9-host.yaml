@@ -1,0 +1,79 @@
+- hosts: all
+  # user: root
+  become: yes
+  become_method: su
+  become_user: root
+
+  vars:
+    default_if: enp2s0
+
+  tasks:
+
+    - name: Upgrade all packages to the latest version
+      apt: update_cache=yes upgrade=dist
+
+    - name: Update APT package cache
+      action: apt update_cache=yes
+
+    - name: Install bridge-utils
+      apt: name=bridge-utils state=present
+
+    - name: Setup bridge br0 where the interface connects to this bridge
+      template: src=../templates/interfaces.br0 dest=/etc/network/interfaces
+      notify:
+        - restart networking
+
+    - name: Install list of packages
+      apt: name={{item}} state=installed
+      with_items:
+           - sudo
+           - curl
+           - vim
+           - make
+
+    - name: Install kvm
+      apt: name={{item}} state=installed
+      with_items:
+           - qemu-kvm
+           - libvirt-clients
+           - libvirt-daemon-system
+
+    - name: Create a new user and add user to libvirt groups
+      user: 
+        name=virsh
+        state=present
+        groups="sudo,libvirt,libvirt-qemu"
+        shell=/bin/bash
+
+    - name: Placing current ssh key to user for ez access
+      authorized_key: user=virsh key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: Make sure we have a 'wheel' group
+      group:
+        name: wheel
+        state: present
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Add sudoers users to wheel group
+      user: name=virsh groups=wheel append=yes state=present createhome=yes
+
+    - name: Disallow password authentication
+      action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+      notify: restart ssh
+
+    - name: Disallow root SSH access
+      action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+      notify: restart ssh
+
+  handlers:
+    - name: restart networking
+      service: name=networking state=restarted
+    - name: restart ssh
+      service: name=sshd state=restarted

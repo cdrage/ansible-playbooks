@@ -20,8 +20,6 @@
 
     - name: Setup bridge br0 where the interface connects to this bridge
       template: src=../templates/interfaces.br0 dest=/etc/network/interfaces
-      notify:
-        - restart networking
 
     - name: Install list of packages
       apt: name={{item}} state=installed
@@ -73,7 +71,5 @@
       notify: restart ssh
 
   handlers:
-    - name: restart networking
-      service: name=networking state=restarted
     - name: restart ssh
       service: name=sshd state=restarted

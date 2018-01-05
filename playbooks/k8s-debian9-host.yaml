@@ -5,6 +5,9 @@
   become_user: root
 
   tasks:
+
+    # PREREQS
+    
     - name: Upgrade all packages to the latest version
       apt: update_cache=yes upgrade=dist
 
@@ -22,6 +25,15 @@
            - ca-certificates 
            - gnupg2
            - software-properties-common
+
+    - name: Create a new user
+      user: 
+        name=k8s
+        state=present
+        groups="sudo,docker"
+        shell=/bin/bash
+
+    # DOCKER
 
     - name: Add Docker signing key, will not download if present
       apt_key:
@@ -42,18 +54,33 @@
 
     - name: Create a docker group
       group: 
-        name=docker 
+        name=k8s
         state=present
 
-    - name: Create a new user
-      user: 
-        name=docker
-        state=present
-        groups="sudo,docker"
-        shell=/bin/bash
 
+    # KUBERNETES
+   
+    # Don't know why it was giving me errors adding it manually, 
+    # TODO convert to how docker does it similarly above (add through ansible not shell)
+    - name: Add Kubernetes signing key
+      shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    
+    - name: Add Kubernetes repository
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+    
+    - name: Install Kubernetes packages
+      apt: name={{item}} state=installed update_cache=yes
+      with_items:
+           - kubectl
+           - kubeadm
+           - kubelet
+
+    # SSH
+    
     - name: Placing key
-      authorized_key: user=docker key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      authorized_key: user=k8s key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     
     - name: Make sure we have a 'wheel' group
       group:
@@ -69,7 +96,7 @@
         validate: 'visudo -cf %s'
 
     - name: Add sudoers users to wheel group
-      user: name=docker groups=wheel append=yes state=present createhome=yes
+      user: name=k8s groups=wheel append=yes state=present createhome=yes
 
     - name: Disallow password authentication
       action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present

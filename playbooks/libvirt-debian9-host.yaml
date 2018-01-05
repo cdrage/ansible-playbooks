@@ -35,16 +35,21 @@
            - qemu-kvm
            - libvirt-clients
            - libvirt-daemon-system
+           - virtinst
 
     - name: Create a new user and add user to libvirt groups
       user: 
-        name=virsh
+        name=libvirt
         state=present
         groups="sudo,libvirt,libvirt-qemu"
         shell=/bin/bash
 
+    - name: Autostart the default network for libvirt
+      shell: virsh net-autostart default
+
+
     - name: Placing current ssh key to user for ez access
-      authorized_key: user=virsh key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      authorized_key: user=libvirt key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
     - name: Make sure we have a 'wheel' group
       group:
@@ -60,7 +65,7 @@
         validate: 'visudo -cf %s'
 
     - name: Add sudoers users to wheel group
-      user: name=virsh groups=wheel append=yes state=present createhome=yes
+      user: name=libvirt groups=wheel append=yes state=present createhome=yes
 
     - name: Disallow password authentication
       action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present

@@ -44,9 +44,13 @@
         groups="sudo,libvirt,libvirt-qemu"
         shell=/bin/bash
 
-    - name: Autostart the default network for libvirt
-      shell: virsh net-autostart default
+    - name: Install kvm
+      apt: name={{item}} state=installed
+      with_items:
+        - iptables-persistent
 
+    - name: Allow forward to br0
+      shell: touch /etc/iptables/rules.v4 && iptables -A FORWARD -p all -i br0 -j ACCEPT && iptables-save > /etc/iptables/rules.v4
 
     - name: Placing current ssh key to user for ez access
       authorized_key: user=libvirt key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

@@ -4,6 +4,9 @@
   become_method: su
   become_user: root
 
+  vars:
+    - create_user: k8s
+
   tasks:
 
     # PREREQS
@@ -26,13 +29,6 @@
            - gnupg2
            - software-properties-common
 
-    - name: Create a new user
-      user: 
-        name=k8s
-        state=present
-        groups="sudo,docker"
-        shell=/bin/bash
-
     # DOCKER
 
     - name: Add Docker signing key, will not download if present
@@ -52,13 +48,19 @@
         state: present
         update_cache: yes
 
-    - name: Create a docker group
+    - name: Make sure Docker group exists
       group: 
-        name=k8s
+        name=docker
         state=present
 
-
     # KUBERNETES
+    #
+    - name: Create a new user
+      user: 
+        name="{{ create_user }}"
+        state=present
+        groups="sudo,docker"
+        shell=/bin/bash
    
     # Don't know why it was giving me errors adding it manually, 
     # TODO convert to how docker does it similarly above (add through ansible not shell)
@@ -77,34 +79,16 @@
            - kubeadm
            - kubelet
 
-    # SSH
-    
-    - name: Placing key
-      authorized_key: user=k8s key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-    
-    - name: Make sure we have a 'wheel' group
-      group:
-        name: wheel
-        state: present
+    # Disable swap (required for kubeadm)
+    - name: Disable swap
+      command: swapoff --all
+      ignore_errors: yes
+      when: common_swap_check_recreate | bool
+      become: yes
 
-    - name: Allow 'wheel' group to have passwordless sudo
-      lineinfile:
-        dest: /etc/sudoers
-        state: present
-        regexp: '^%wheel'
-        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-        validate: 'visudo -cf %s'
-
-    - name: Add sudoers users to wheel group
-      user: name=k8s groups=wheel append=yes state=present createhome=yes
-
-    - name: Disallow password authentication
-      action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
-      notify: restart ssh
-
-    - name: Disallow root SSH access
-      action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
-      notify: restart ssh
+    # Add the user to wheel for passwordless sudo
+    # make sure that root ssh is disabled as well
+    - include: ../tasks/ssh-and-wheel.yaml
 
   handlers:
     - name: restart networking

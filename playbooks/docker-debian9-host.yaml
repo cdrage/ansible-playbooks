@@ -43,7 +43,7 @@
         state: present
         update_cache: yes
 
-    - name: Create a docker group
+    - name: Make sure Docker group exists
       group: 
         name="{{ create_user }}"
         state=present

@@ -6,6 +6,7 @@
 
   vars:
     default_if: enp2s0
+    create_user: libvirt
 
   tasks:
 
@@ -39,45 +40,22 @@
 
     - name: Create a new user and add user to libvirt groups
       user: 
-        name=libvirt
+        name="{{ create_user }}"
         state=present
         groups="sudo,libvirt,libvirt-qemu"
         shell=/bin/bash
 
-    - name: Install kvm
+    # Required due to default routes on Debian 9 installation
+    - name: Install iptables-persistent
       apt: name={{item}} state=installed
       with_items:
         - iptables-persistent
-
     - name: Allow forward to br0
       shell: touch /etc/iptables/rules.v4 && iptables -A FORWARD -p all -i br0 -j ACCEPT && iptables-save > /etc/iptables/rules.v4
 
-    - name: Placing current ssh key to user for ez access
-      authorized_key: user=libvirt key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-
-    - name: Make sure we have a 'wheel' group
-      group:
-        name: wheel
-        state: present
-
-    - name: Allow 'wheel' group to have passwordless sudo
-      lineinfile:
-        dest: /etc/sudoers
-        state: present
-        regexp: '^%wheel'
-        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-        validate: 'visudo -cf %s'
-
-    - name: Add sudoers users to wheel group
-      user: name=libvirt groups=wheel append=yes state=present createhome=yes
-
-    - name: Disallow password authentication
-      action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
-      notify: restart ssh
-
-    - name: Disallow root SSH access
-      action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
-      notify: restart ssh
+    # Add the user to wheel for passwordless sudo
+    # make sure that root ssh is disabled as well
+    - include: ../tasks/ssh-and-wheel.yaml
 
   handlers:
     - name: restart ssh

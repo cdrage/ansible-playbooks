@@ -28,6 +28,7 @@
            - ca-certificates 
            - gnupg2
            - software-properties-common
+           - nfs-common
 
     # DOCKER
 
@@ -80,7 +81,14 @@
            - kubelet
 
     # Disable swap (required for kubeadm)
-    - name: Remove swapfile from /etc/fstab
+    - name: swap - remove current swaps from fstab
+      lineinfile:
+        dest: /etc/fstab
+        regexp: '^/[\S]+\s+none\s+swap '
+        state: absent
+      become: yes
+
+    - name: Remove swapfile
       mount:
         name: swap
         fstype: swap

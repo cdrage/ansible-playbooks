@@ -81,13 +81,6 @@
            - kubelet
 
     # Disable swap (required for kubeadm)
-    - name: swap - remove current swaps from fstab
-      lineinfile:
-        dest: /etc/fstab
-        regexp: '^/[\S]+\s+none\s+swap '
-        state: absent
-      become: yes
-
     - name: Remove swapfile
       mount:
         name: swap
@@ -97,6 +90,9 @@
     - name: Disable swap
       command: swapoff -a
       when: ansible_swaptotal_mb > 0
+
+    - name: Remove swap entry from /etc/fstab
+      shell: sed -i '/swap/d' /etc/fstab
 
     # Add the user to wheel for passwordless sudo
     # make sure that root ssh is disabled as well

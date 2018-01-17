@@ -1,12 +1,10 @@
 - hosts: all
-  # user: root
   become: yes
   become_method: su
   become_user: root
 
   vars:
     default_if: enp2s0
-    create_user: libvirt
 
   tasks:
 
@@ -38,9 +36,9 @@
            - libvirt-daemon-system
            - virtinst
 
-    - name: Create a new user and add user to libvirt groups
+    - name: Add current user to libvirt groups
       user: 
-        name="{{ create_user }}"
+        name="{{ ansible_user_id }}"
         state=present
         groups="sudo,libvirt,libvirt-qemu"
         shell=/bin/bash
@@ -50,13 +48,6 @@
       apt: name={{item}} state=installed
       with_items:
         - iptables-persistent
+
     - name: Allow forward to br0
       shell: touch /etc/iptables/rules.v4 && iptables -A FORWARD -p all -i br0 -j ACCEPT && iptables-save > /etc/iptables/rules.v4
-
-    # Add the user to wheel for passwordless sudo
-    # make sure that root ssh is disabled as well
-    - include: ../tasks/ssh-and-wheel.yaml
-
-  handlers:
-    - name: restart ssh
-      service: name=sshd state=restarted

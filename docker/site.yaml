@@ -1,11 +1,4 @@
 - hosts: all
-  # user: root
-  become: yes
-  become_method: su
-  become_user: root
-
-  vars:
-    - create_user: docker
 
   tasks:
     - name: Upgrade all packages to the latest version
@@ -45,23 +38,12 @@
 
     - name: Make sure Docker group exists
       group: 
-        name="{{ create_user }}"
+        name="docker"
         state=present
 
-    - name: Create a new user
+    - name: Add current user to docker group
       user: 
-        name="{{ create_user }}"
+        name="{{ ansible_user_id }}"
         state=present
         groups="sudo,docker"
         shell=/bin/bash
-
-    # Add the user to wheel for passwordless sudo
-    # make sure that root ssh is disabled as well
-    - include: ../tasks/ssh-and-wheel.yaml
-
-
-  handlers:
-    - name: restart networking
-      service: name=networking state=restarted
-    - name: restart ssh
-      service: name=sshd state=restarted

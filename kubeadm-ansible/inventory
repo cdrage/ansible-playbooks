@@ -1,0 +1,9 @@
+[master]
+192.168.7.85
+
+[node]
+192.168.7.191
+
+[kube-cluster:children]
+master
+node

@@ -11,6 +11,7 @@
                  --kubernetes-version {{ kube_version }} \
                  --pod-network-cidr {{ pod_network_cidr }} \
                  --token {{ token }} \
+                 {{ kubeadm_opts }} \
                  {{ init_opts }}
   register: init_cluster
 

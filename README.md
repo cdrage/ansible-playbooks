@@ -14,10 +14,15 @@ These are my ansible playbooks :). Here be dragons.
 
 Debian / Ubuntu / CentOS
 
+Fork of: https://github.com/kairen/kubeadm-ansible/ with some of my modifications (get it to work on Debian 9)
+
 ```sh
 cd kubeadm-ansible
+
+# Edit as necessary
 vim inventory
-ansible-playbook site.yaml -u YOURUSER --become-user root --become-method su -K -i inventory
+vim group_vars/all.yaml
+ansible-playbook site.yaml -i inventory
 ```
 
 ### ssh-provision

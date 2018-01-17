@@ -7,7 +7,7 @@ token: b0f7b8.8d1767876297d85c
 init_opts: ""
 
 # Any other additional opts you want to add.. 
-kubeadm_ops: ""
+kubeadm_opts: ""
 # For example:
 # kubeadm_opts: '--apiserver-cert-extra-sans "k8s.domain.com,kubernetes.domain.com"'
 

@@ -51,9 +51,9 @@ ansible-playbook site.yaml -i inventory
 
 Debian 9 only
 
-Creates a KVM host with the user `libvirt`. This copies over your local public SSH key for access.
+Creates a KVM host
 
 ```sh
 cd libvirt
 ansible-playbook site.yaml -i inventory
-G:w```
+```

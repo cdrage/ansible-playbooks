@@ -1,7 +1,5 @@
 - hosts: all
   become: yes
-  become_method: su
-  become_user: root
 
   vars:
     default_if: enp2s0

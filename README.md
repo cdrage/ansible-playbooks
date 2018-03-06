@@ -20,9 +20,8 @@ Fork of: https://github.com/kairen/kubeadm-ansible/ with some of my modification
 cd kubeadm-ansible
 
 # Edit as necessary
-vim inventory
-vim group_vars/all.yaml
-ansible-playbook site.yaml -i inventory
+cp hosts.sample hosts
+ansible-playbook site.yaml -i hosts
 ```
 
 ### ssh-provision
@@ -32,7 +31,8 @@ Creates a user / provisions a group of servers and copies over your local SSH pu
 
 ```sh
 cd ssh-provision
-ansible-playbook site.yaml -i inventory --extra-vars="create_user=USERYOUWANTTOCREATE"
+cp hosts.sample hosts
+ansible-playbook site.yaml -i hosts --extra-vars="create_user=USERYOUWANTTOCREATE"
 ```
 
 
@@ -44,7 +44,8 @@ Creates a Docker host
 
 ```sh
 cd docker
-ansible-playbook site.yaml -i inventory
+cp hosts.sample hosts
+ansible-playbook site.yaml -i hosts
 ```
 
 ### libvirt
@@ -55,5 +56,6 @@ Creates a KVM host
 
 ```sh
 cd libvirt
-ansible-playbook site.yaml -i inventory
+cp hosts.sample hosts
+ansible-playbook site.yaml -i hosts
 ```

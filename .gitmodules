@@ -1,0 +1,3 @@
+[submodule "kubeadm-ansible"]
+	path = kubeadm-ansible
+	url = https://github.com/cdrage/kubeadm-ansible

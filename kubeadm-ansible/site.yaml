@@ -23,3 +23,4 @@
   become: yes
   roles:
     - { role: cni, tags: cni }
+    - { role: addon, tags: addon }

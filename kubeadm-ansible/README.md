@@ -1,5 +1,3 @@
-FORK OF https://github.com/kairen/kubeadm-ansible
-
 # Kubeadm Ansible Playbook
 Build a Kubernetes cluster using Ansible with kubeadm. The goal is easily install a Kubernetes cluster on machines running `Ubuntu 16.04`, `CentOS 7`.
 
@@ -20,9 +18,9 @@ master
 node
 ```
 
-After going through the setup, run the `site.yml` playbook:
+After going through the setup, run the `site.yaml` playbook:
 ```sh
-$ ansible-playbook site.yml
+$ ansible-playbook site.yaml
 ...
 ==> master1: TASK [addon : Create Kubernetes dashboard deployment] **************************
 ==> master1: changed: [192.16.35.12 -> 192.16.35.12]
@@ -48,7 +46,7 @@ etcd-master1                            1/1       Running   0          23m
 ...
 ```
 
-Finally, reset all kubeadm installed state using `reset-site.yml` playbook:
+Finally, reset all kubeadm installed state using `reset-site.yaml` playbook:
 ```sh
-$ ansible-playbook reset-site.yml
+$ ansible-playbook reset-site.yaml
 ```

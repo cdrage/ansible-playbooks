@@ -16,6 +16,8 @@ Debian / Ubuntu / CentOS
 
 Fork of: https://github.com/kairen/kubeadm-ansible/ with some of my modifications (get it to work on Debian 9)
 
+The source of my fork is: https://github.com/cdrage/kubeadm-ansible
+
 ```sh
 cd kubeadm-ansible
 

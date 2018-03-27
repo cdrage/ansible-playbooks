@@ -40,7 +40,7 @@ ansible-playbook site.yaml -i hosts --extra-vars="create_user=USERYOUWANTTOCREAT
 
 ### docker
 
-Debian / Ubuntu only
+Debian 9 only
 
 Creates a Docker host
 

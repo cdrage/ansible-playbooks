@@ -47,5 +47,5 @@
       user: 
         name="{{ ansible_user_id }}"
         state=present
-        groups="sudo,docker"
+        groups=docker
         shell=/bin/bash

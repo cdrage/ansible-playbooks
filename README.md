@@ -12,7 +12,9 @@ These are my ansible playbooks :). Here be dragons.
 
 ### kubeadm-ansible
 
-Debian / Ubuntu / CentOS
+**OS:** Debian / Ubuntu / CentOS
+
+How I deploy to a bare-metal cluster using kubeadm-ansible (essentially kubeadm + ansible)
 
 Fork of: https://github.com/kairen/kubeadm-ansible/ with some of my modifications (get it to work on Debian 9)
 
@@ -28,6 +30,7 @@ ansible-playbook site.yaml -i hosts
 
 ### ssh-provision
 
+**OS:** Any
 
 Creates a user / provisions a group of servers and copies over your local SSH public key.
 
@@ -40,7 +43,7 @@ ansible-playbook site.yaml -i hosts --extra-vars="create_user=USERYOUWANTTOCREAT
 
 ### docker
 
-Debian 9 only
+**OS:** Debian 9
 
 Creates a Docker host
 
@@ -52,7 +55,7 @@ ansible-playbook site.yaml -i hosts
 
 ### libvirt
 
-Debian 9 only
+**OS:** Debian 9
 
 Creates a KVM host
 

@@ -24,7 +24,7 @@ The source of my fork is: https://github.com/cdrage/kubeadm-ansible
 cd kubeadm-ansible
 
 # Edit as necessary
-cp hosts.sample hosts
+vim inventory
 ansible-playbook site.yaml -i hosts
 ```
 

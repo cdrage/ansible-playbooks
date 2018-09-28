@@ -49,9 +49,3 @@
         state=present
         groups=docker
         shell=/bin/bash
-
-    - name: Install docker-compose
-      apt:
-        name: docker-compose=1.8.*
-        state: present
-        update_cache: yes

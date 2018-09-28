@@ -39,6 +39,7 @@
         name="{{ ansible_user_id }}"
         state=present
         groups="sudo,libvirt,libvirt-qemu"
+        append=yes
         shell=/bin/bash
 
     # Required due to default routes on Debian 9 installation

@@ -15,8 +15,8 @@
     - name: Install bridge-utils
       apt: name=bridge-utils state=present
 
-    - name: Setup bridge br0 where the interface connects to this bridge
-      template: src=../templates/interfaces.br0 dest=/etc/network/interfaces
+    #- name: Setup bridge br0 where the interface connects to this bridge
+    #template: src=../templates/interfaces.br0 dest=/etc/network/interfaces
 
     - name: Install list of packages
       apt: name={{item}} state=installed

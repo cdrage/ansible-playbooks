@@ -47,5 +47,6 @@
       user: 
         name="{{ ansible_user_id }}"
         state=present
+        append=yes
         groups=docker
         shell=/bin/bash

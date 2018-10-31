@@ -10,22 +10,16 @@
 
 These are my ansible playbooks :). Here be dragons.
 
-### kubeadm-ansible
 
-**OS:** Debian / Ubuntu / CentOS
+## Notes
 
-How I deploy to a bare-metal cluster using kubeadm-ansible (essentially kubeadm + ansible)
-
-Fork of: https://github.com/kairen/kubeadm-ansible/ with some of my modifications (get it to work on Debian 9)
-
-The source of my fork is: https://github.com/cdrage/kubeadm-ansible
+All can be provisioned by simply adding your host to:
 
 ```sh
-cd kubeadm-ansible
+vim hosts
 
-# Edit as necessary
-vim inventory
-ansible-playbook site.yaml -i hosts
+[all]
+192.168.1.11
 ```
 
 ### ssh-provision

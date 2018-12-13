@@ -19,7 +19,7 @@ All can be provisioned by simply adding your host to:
 vim hosts
 
 [all]
-192.168.1.11
+host1
 ```
 
 ### ssh-provision

@@ -8,7 +8,7 @@
  /_/   \_\_| |_|___/_|_.__/|_|\___|
 ```
 
-These are my ansible playbooks :). Here be dragons.
+These are my ansible playbooks :). Here be dragons. Some are copied / forked from other locations
 
 
 ## Notes

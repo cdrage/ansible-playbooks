@@ -37,7 +37,7 @@ ansible-playbook site.yaml -i hosts --extra-vars="create_user=USERYOUWANTTOCREAT
 
 ### docker
 
-**OS:** Debian 9
+**OS:** Debian 10
 
 Creates a Docker host
 
@@ -49,7 +49,7 @@ ansible-playbook site.yaml -i hosts
 
 ### libvirt
 
-**OS:** Debian 9
+**OS:** Debian 10
 
 Creates a KVM host
 

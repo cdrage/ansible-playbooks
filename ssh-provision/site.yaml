@@ -43,7 +43,6 @@
       action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
       notify: restart ssh
 
-
   handlers:
     - name: restart ssh
       service: name=sshd state=restarted

@@ -4,14 +4,26 @@
   tasks:
 
     - name: Install sudo
+      when: ansible_os_family == 'Debian'
       apt:
         name: sudo
         state: present
         update_cache: yes
 
+    - name: Install sudo
+      when: ansible_os_family == 'RedHat'
+      yum:
+        name: sudo
+        state: latest
+
     - name: Make sure we have a 'wheel' group
       group:
         name: wheel
+        state: present
+
+    - name: Make sure we have a 'sudo' group
+      group:
+        name: sudo
         state: present
 
     - name: Allow 'wheel' group to have passwordless sudo

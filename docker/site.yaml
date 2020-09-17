@@ -10,7 +10,7 @@
       action: apt update_cache=yes
 
     - name: Install list of packages
-      apt: name={{item}} state=installed
+      apt: name={{item}} state=present
       with_items:
            - sudo
            - curl

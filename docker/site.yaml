@@ -1,13 +1,13 @@
 - hosts: all
 
-  become: yes
-
   tasks:
     - name: Upgrade all packages to the latest version
       apt: update_cache=yes upgrade=dist
+      become: yes
 
     - name: Update APT package cache
       action: apt update_cache=yes
+      become: yes
 
     - name: Install list of packages
       apt: name={{item}} state=present
@@ -20,33 +20,39 @@
            - ca-certificates 
            - gnupg2
            - software-properties-common
+      become: yes
 
     - name: Add Docker signing key, will not download if present
       apt_key:
         id: 0EBFCD88
         url: https://download.docker.com/linux/debian/gpg
         state: present
+      become: yes
 
     - name: Add Docker repository
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/debian buster edge
         state: present
+      become: yes
 
     - name: Install Docker
       apt:
         name: docker-ce
         state: present
         update_cache: yes
+      become: yes
 
     - name: Make sure Docker group exists
       group: 
         name="docker"
         state=present
+      become: yes
 
     - name: Add current user to docker group
       user: 
-        name="{{ ansible_user_id }}"
-        state=present
-        append=yes
-        groups=docker
-        shell=/bin/bash
+        name: "{{ ansible_user }}"
+        state: present
+        append: yes
+        groups: docker
+        shell: /bin/bash
+      become: yes

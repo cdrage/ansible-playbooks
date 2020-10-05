@@ -15,6 +15,11 @@
     - name: Install bridge-utils
       apt: name=bridge-utils state=present
 
+    - name: Modprobe bridge-utils
+      modprobe:
+        name: bridge
+        state: present
+
     # NO setting up of the netwowrk interface.. or else you'll get kicked off your normal connection!
     #- name: Setup bridge br0 where the interface connects to this bridge
     #template: src=../templates/interfaces.br0 dest=/etc/network/interfaces
@@ -35,13 +40,12 @@
            - libvirt-daemon-system
            - virtinst
 
-    - name: Add current user to libvirt groups
-      user: 
-        name="{{ ansible_user_id }}"
-        state=present
-        groups="sudo,libvirt,libvirt-qemu"
-        append=yes
-        shell=/bin/bash
+    # Add user to group for libvirt
+    - name: Adding existing user '{{ user }}' to group libvirt
+      user:
+        name: '{{ user }}'
+        groups: "libvirt,libvirt-qemu"
+        append: yes
 
     # Required due to default routes on Debian 10 installation
     - name: Install iptables-persistent

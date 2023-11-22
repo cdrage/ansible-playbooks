@@ -1,0 +1,30 @@
+- hosts: all
+
+  # EXAMPLE! Make sure you change this..
+  vars:
+    interface_name: eno1
+    static_ip: 192.168.1.11
+    gateway: 192.168.1.1
+
+  tasks:
+    - name: Copy the network interface configuration
+      ansible.builtin.template:
+        src: interfaces.j2
+        dest: /etc/network/interfaces
+      when: ansible_os_family == "Debian" and ansible_distribution_major_version == '12'
+      become: yes
+
+    - name: Restart networking to apply changes
+      ansible.builtin.service:
+        name: networking
+        state: restarted
+      when: ansible_os_family == "Debian" and ansible_distribution_major_version == '12'
+      become: yes
+
+    - name: Wait for system to become reachable again
+      wait_for_connection:
+        timeout: 60
+
+    - name: Verify connectivity using the new static IP
+      ping:
+      delegate_to: "{{ static_ip }}"

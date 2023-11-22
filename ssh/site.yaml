@@ -1,5 +1,4 @@
 - hosts: all
-  become: yes
 
   tasks:
 
@@ -9,22 +8,34 @@
         name: sudo
         state: present
         update_cache: yes
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Install sudo
       when: ansible_os_family == 'RedHat'
       yum:
         name: sudo
         state: latest
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Make sure we have a 'wheel' group
       group:
         name: wheel
         state: present
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Make sure we have a 'sudo' group
       group:
         name: sudo
         state: present
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Allow 'wheel' group to have passwordless sudo
       lineinfile:
@@ -32,7 +43,9 @@
         state: present
         regexp: '^%wheel'
         line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-        validate: 'visudo -cf %s'
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Create the user
       user: 
@@ -40,20 +53,35 @@
         state=present
         groups="sudo"
         shell=/bin/bash
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Placing key
       authorized_key: user="{{ create_user }}" key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Add sudoers users to wheel group
       user: name="{{ create_user }}" groups=wheel append=yes state=present createhome=yes
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Disallow password authentication
       action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
       notify: restart ssh
+      become: yes
+      become_method: su
+      become_user: root
 
     - name: Disallow root SSH access
       action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
       notify: restart ssh
+      become: yes
+      become_method: su
+      become_user: root
 
   handlers:
     - name: restart ssh

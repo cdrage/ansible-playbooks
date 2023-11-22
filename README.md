@@ -31,30 +31,5 @@ Creates a user / provisions a group of servers and copies over your local SSH pu
 ```sh
 cd ssh-provision
 cp hosts.sample hosts
-ansible-playbook site.yaml -i hosts --extra-vars="create_user=USERYOUWANTTOCREATE"
-```
-
-
-### docker
-
-**OS:** Debian 10
-
-Creates a Docker host
-
-```sh
-cd docker
-cp hosts.sample hosts
-ansible-playbook site.yaml -i hosts
-```
-
-### libvirt
-
-**OS:** Debian 10
-
-Creates a KVM host
-
-```sh
-cd libvirt
-cp hosts.sample hosts
-ansible-playbook site.yaml -i hosts
+ansible-playbook site.yaml --ask-become-pass -k -i hosts --extra-vars="create_user=USERYOUWANTTOCREATE"
 ```
